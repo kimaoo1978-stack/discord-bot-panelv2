@@ -114,10 +114,15 @@ app.get('/callback', async (req, res) => {
 });
 
 // Dashboard
-app.get('/dashboard', checkAuth, (req, res) => {
-    res.render('dashboard', { user: req.session.user });
+res.render('dashboard', { 
+    user: req.session.user,
+    stats: {
+        toplamBasvuru: 0,
+        bekleyen: 0,
+        kabul: 0,
+        red: 0
+    }
 });
-
 // Logout
 app.get('/logout', (req, res) => {
     req.session.destroy();
