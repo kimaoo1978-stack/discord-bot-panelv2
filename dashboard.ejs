@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Discord Bot</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <h1>🤖 Discord Bot Panel</h1>
+      <div class="nav-links">
+        <a href="/dashboard" class="active">Dashboard</a>
+        <a href="/applications">Başvurular</a>
+        <a href="/settings">Ayarlar</a>
+        <div class="user-info">
+          <img src="https://cdn.discordapp.com/avatars/<%= user.id %>/<%= user.avatar %>.png" alt="Avatar">
+          <span><%= user.username %></span>
+        </div>
+        <a href="/logout" class="btn btn-secondary">Çıkış</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container dashboard">
+    <h2>Hoş geldin, <%= user.username %>! 👋</h2>
+
+    <div class="stats-grid">
+      <div class="stat-card purple">
+        <div class="stat-icon">📋</div>
+        <div class="stat-info">
+          <h3><%= stats.toplamBasvuru %></h3>
+          <p>Toplam Başvuru</p>
+        </div>
+      </div>
+
+      <div class="stat-card orange">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-info">
+          <h3><%= stats.bekleyen %></h3>
+          <p>Bekleyen</p>
+        </div>
+      </div>
+
+      <div class="stat-card green">
+        <div class="stat-icon">✅</div>
+        <div class="stat-info">
+          <h3><%= stats.kabul %></h3>
+          <p>Kabul Edilen</p>
+        </div>
+      </div>
+
+      <div class="stat-card red">
+        <div class="stat-icon">❌</div>
+        <div class="stat-info">
+          <h3><%= stats.red %></h3>
+          <p>Reddedilen</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <h3>Hızlı İşlemler</h3>
+      <div class="action-buttons">
+        <a href="/applications" class="action-btn">
+          <span>📝</span>
+          Bekleyen Başvurular
+        </a>
+        <a href="/settings" class="action-btn">
+          <span>⚙️</span>
+          Ayarlar
+        </a>
+        <a href="#" class="action-btn">
+          <span>📊</span>
+          Raporlar
+        </a>
+      </div>
+    </div>
+
+    <div class="recent-activity">
+      <h3>Son Aktiviteler</h3>
+      <div class="activity-list">
+        <div class="activity-item">
+          <span class="activity-icon green">✅</span>
+          <div class="activity-content">
+            <p><strong>Ahmet#1234</strong> kullanıcısının klan başvurusu kabul edildi</p>
+            <small>5 dakika önce</small>
+          </div>
+        </div>
+        <div class="activity-item">
+          <span class="activity-icon red">❌</span>
+          <div class="activity-content">
+            <p><strong>Mehmet#5678</strong> kullanıcısının yetkili başvurusu reddedildi</p>
+            <small>15 dakika önce</small>
+          </div>
+        </div>
+        <div class="activity-item">
+          <span class="activity-icon blue">📩</span>
+          <div class="activity-content">
+            <p><strong>Ayşe#9999</strong> yeni partner başvurusu yaptı</p>
+            <small>1 saat önce</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Discord Bot Panel</p>
+  </footer>
+</body>
+</html>

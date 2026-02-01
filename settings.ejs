@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ayarlar - Discord Bot</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <h1>🤖 Discord Bot Panel</h1>
+      <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/applications">Başvurular</a>
+        <a href="/settings" class="active">Ayarlar</a>
+        <div class="user-info">
+          <img src="https://cdn.discordapp.com/avatars/<%= user.id %>/<%= user.avatar %>.png" alt="Avatar">
+          <span><%= user.username %></span>
+        </div>
+        <a href="/logout" class="btn btn-secondary">Çıkış</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h2>Ayarlar ⚙️</h2>
+
+    <div class="settings-grid">
+      <div class="settings-card">
+        <h3>🔔 Bildirimler</h3>
+        <div class="setting-item">
+          <label>
+            <input type="checkbox" checked> Yeni başvurularda bildir
+          </label>
+        </div>
+        <div class="setting-item">
+          <label>
+            <input type="checkbox"> Günlük rapor gönder
+          </label>
+        </div>
+        <div class="setting-item">
+          <label>
+            <input type="checkbox" checked> Email bildirimleri
+          </label>
+        </div>
+        <button class="btn btn-primary">Kaydet</button>
+      </div>
+
+      <div class="settings-card">
+        <h3>🎨 Tema</h3>
+        <div class="setting-item">
+          <label>Tema Seç:</label>
+          <select class="form-control">
+            <option>Koyu Tema</option>
+            <option>Açık Tema</option>
+            <option>Otomatik</option>
+          </select>
+        </div>
+        <button class="btn btn-primary">Kaydet</button>
+      </div>
+
+      <div class="settings-card">
+        <h3>⏰ Otomatik İşlemler</h3>
+        <div class="setting-item">
+          <label>
+            <input type="checkbox"> 7 günden eski başvuruları otomatik red et
+          </label>
+        </div>
+        <div class="setting-item">
+          <label>
+            <input type="checkbox"> Kabul edilen başvurulara otomatik rol ver
+          </label>
+        </div>
+        <button class="btn btn-primary">Kaydet</button>
+      </div>
+
+      <div class="settings-card">
+        <h3>🛡️ Güvenlik</h3>
+        <div class="setting-item">
+          <label>
+            <input type="checkbox" checked> İki faktörlü kimlik doğrulama
+          </label>
+        </div>
+        <div class="setting-item">
+          <label>
+            <input type="checkbox"> Giriş bildirimleri
+          </label>
+        </div>
+        <button class="btn btn-danger">Tüm Oturumları Kapat</button>
+      </div>
+
+      <div class="settings-card">
+        <h3>📊 Veri Yönetimi</h3>
+        <div class="setting-item">
+          <button class="btn btn-info">Verileri Dışa Aktar</button>
+        </div>
+        <div class="setting-item">
+          <button class="btn btn-warning">Cache Temizle</button>
+        </div>
+        <div class="setting-item">
+          <button class="btn btn-danger">Tüm Verileri Sil</button>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <h3>🔗 API Anahtarı</h3>
+        <div class="setting-item">
+          <input type="text" class="form-control" value="sk_12345..." readonly>
+        </div>
+        <button class="btn btn-warning">Yeni Anahtar Oluştur</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Discord Bot Panel</p>
+  </footer>
+</body>
+</html>

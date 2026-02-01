@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Başvurular - Discord Bot</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <h1>🤖 Discord Bot Panel</h1>
+      <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/applications" class="active">Başvurular</a>
+        <a href="/settings">Ayarlar</a>
+        <div class="user-info">
+          <img src="https://cdn.discordapp.com/avatars/<%= user.id %>/<%= user.avatar %>.png" alt="Avatar">
+          <span><%= user.username %></span>
+        </div>
+        <a href="/logout" class="btn btn-secondary">Çıkış</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h2>Başvurular 📝</h2>
+
+    <div class="filters">
+      <button class="filter-btn active" onclick="filterApps('all')">Tümü</button>
+      <button class="filter-btn" onclick="filterApps('pending')">Bekleyen</button>
+      <button class="filter-btn" onclick="filterApps('approved')">Kabul</button>
+      <button class="filter-btn" onclick="filterApps('rejected')">Red</button>
+    </div>
+
+    <div class="applications-table">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Kullanıcı</th>
+            <th>Tür</th>
+            <th>Durum</th>
+            <th>Tarih</th>
+            <th>İşlem</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% applications.forEach(app => { %>
+            <tr data-status="<%= app.status.toLowerCase() %>">
+              <td>#<%= app.id %></td>
+              <td><%= app.user %></td>
+              <td><span class="badge badge-<%= app.type.toLowerCase() %>"><%= app.type %></span></td>
+              <td>
+                <% if (app.status === 'Bekliyor') { %>
+                  <span class="badge badge-warning">⏳ Bekliyor</span>
+                <% } else if (app.status === 'Kabul') { %>
+                  <span class="badge badge-success">✅ Kabul</span>
+                <% } else { %>
+                  <span class="badge badge-danger">❌ Red</span>
+                <% } %>
+              </td>
+              <td><%= app.date %></td>
+              <td>
+                <% if (app.status === 'Bekliyor') { %>
+                  <button class="btn-small btn-success" onclick="handleApp(<%= app.id %>, 'kabul')">✅</button>
+                  <button class="btn-small btn-danger" onclick="handleApp(<%= app.id %>, 'red')">❌</button>
+                <% } else { %>
+                  <button class="btn-small btn-info" onclick="viewApp(<%= app.id %>)">👁️</button>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Discord Bot Panel</p>
+  </footer>
+
+  <script>
+    function filterApps(status) {
+      const buttons = document.querySelectorAll('.filter-btn');
+      buttons.forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+
+      const rows = document.querySelectorAll('tbody tr');
+      rows.forEach(row => {
+        if (status === 'all') {
+          row.style.display = '';
+        } else {
+          const rowStatus = row.dataset.status;
+          if (
+            (status === 'pending' && rowStatus === 'bekliyor') ||
+            (status === 'approved' && rowStatus === 'kabul') ||
+            (status === 'rejected' && rowStatus === 'red')
+          ) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        }
+      });
+    }
+
+    async function handleApp(id, action) {
+      if (!confirm(`Bu başvuruyu ${action} etmek istediğinden emin misin?`)) return;
+
+      try {
+        const res = await fetch(`/api/application/${id}/${action}`, { method: 'POST' });
+        const data = await res.json();
+        
+        if (data.success) {
+          alert(data.message);
+          location.reload();
+        }
+      } catch (err) {
+        alert('Hata oluştu!');
+      }
+    }
+
+    function viewApp(id) {
+      alert(`Başvuru #${id} detayları (yakında eklenecek)`);
+    }
+  </script>
+</body>
+</html>
