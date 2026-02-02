@@ -3,7 +3,6 @@ const express = require('express');
 const session = require('express-session');
 const axios = require('axios');
 const path = require('path');
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -56,7 +55,7 @@ app.get('/login', (req, res) => {
 // OAuth2 Callback
 app.get('/callback', async (req, res) => {
     const code = req.query.code;
-
+    
     if (!code) {
         return res.redirect('/');
     }
@@ -114,15 +113,18 @@ app.get('/callback', async (req, res) => {
 });
 
 // Dashboard
-res.render('dashboard', { 
-    user: req.session.user,
-    stats: {
-        toplamBasvuru: 0,
-        bekleyen: 0,
-        kabul: 0,
-        red: 0
-    }
+app.get('/dashboard', checkAuth, (req, res) => {
+    res.render('dashboard', { 
+        user: req.session.user,
+        stats: {
+            toplamBasvuru: 0,
+            bekleyen: 0,
+            kabul: 0,
+            red: 0
+        }
+    });
 });
+
 // Logout
 app.get('/logout', (req, res) => {
     req.session.destroy();
