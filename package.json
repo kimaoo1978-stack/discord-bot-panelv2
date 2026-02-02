@@ -20,24 +20,3 @@
     "node": ">=18.0.0"
   }
 }
-```
-
----
-
-## ⚠️ ÖNEMLİ:
-
-- ✅ **Sadece yukarıdaki kodu** yapıştırın
-- ❌ **Başka hiçbir şey eklemeyin** (açıklama, notlar, vs.)
-- ❌ **```json** veya **```** gibi markdown işaretleri olmamalı
-- ✅ Dosya **sadece bu JSON ile** başlamalı ve bitmeli
-
----
-
-## 🎯 Doğru Görünüm:
-
-Dosyayı açtığınızda **SADECE** şunu görmelisiniz:
-```
-{
-  "name": "discord-bot-panel",
-  ...
-}
