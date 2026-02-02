@@ -3,8 +3,14 @@ const express = require('express');
 const session = require('express-session');
 const axios = require('axios');
 const path = require('path');
+const mongoose = require('mongoose');
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// MongoDB bağlantısı
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('✅ MongoDB bağlantısı başarılı'))
+  .catch(err => console.error('❌ MongoDB bağlantı hatası:', err));
 
 // Environment variables
 const CLIENT_ID = process.env.CLIENT_ID;
