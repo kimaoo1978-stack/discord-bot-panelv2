@@ -4,6 +4,9 @@ const session = require('express-session');
 const axios = require('axios');
 const path = require('path');
 const mongoose = require('mongoose');
+const Application = require('./models/Application');
+const Activity = require('./models/Activity');
+const UserStats = require('./models/UserStats');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -28,6 +31,10 @@ app.use(session({
     }
 }));
 
+// Body parser
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 // View engine
 app.set('view engine', 'ejs');
 app.set('views', __dirname);
@@ -41,6 +48,15 @@ function checkAuth(req, res, next) {
         next();
     } else {
         res.redirect('/');
+    }
+}
+
+// Admin middleware
+function checkAdmin(req, res, next) {
+    if (req.session.user && req.session.user.id === '1316826036688797756') {
+        next();
+    } else {
+        res.status(403).send('Yetkisiz erişim!');
     }
 }
 
@@ -119,19 +135,28 @@ app.get('/callback', async (req, res) => {
 });
 
 // Dashboard
-app.get('/dashboard', checkAuth, (req, res) => {
-    res.render('dashboard', { 
-        user: req.session.user,
-        stats: {
-            toplamBasvuru: 0,
-            bekleyen: 0,
-            kabul: 0,
-            red: 0
-        }
-    });
+app.get('/dashboard', checkAuth, async (req, res) => {
+    try {
+        const stats = {
+            toplamBasvuru: await Application.countDocuments(),
+            bekleyen: await Application.countDocuments({ status: 'pending' }),
+            kabul: await Application.countDocuments({ status: 'approved' }),
+            red: await Application.countDocuments({ status: 'rejected' })
+        };
+        res.render('dashboard', { 
+            user: req.session.user,
+            stats
+        });
+    } catch (error) {
+        console.error('Dashboard hatası:', error);
+        res.render('dashboard', { 
+            user: req.session.user,
+            stats: { toplamBasvuru: 0, bekleyen: 0, kabul: 0, red: 0 }
+        });
+    }
 });
 
-// Başvurular
+// Başvurular (eski route - değiştirilmedi)
 app.get('/applications', checkAuth, (req, res) => {
     res.render('applications', { 
         user: req.session.user,
@@ -144,6 +169,149 @@ app.get('/settings', checkAuth, (req, res) => {
     res.render('settings', { 
         user: req.session.user
     });
+});
+
+// ==================== BAŞVURU SİSTEMİ ====================
+
+// Başvuru formu sayfası
+app.get('/apply', checkAuth, (req, res) => {
+    res.render('apply', { user: req.session.user });
+});
+
+// Başvuru gönderme
+app.post('/api/apply', checkAuth, async (req, res) => {
+    try {
+        const { age, reason, experience } = req.body;
+        const user = req.session.user;
+
+        const existingApp = await Application.findOne({ userId: user.id });
+        if (existingApp) {
+            return res.json({ success: false, message: 'Zaten bir başvurunuz var!' });
+        }
+
+        const application = new Application({
+            userId: user.id,
+            username: user.username,
+            discriminator: user.discriminator,
+            avatar: user.avatar,
+            email: user.email,
+            discordTag: `${user.username}#${user.discriminator}`,
+            age: parseInt(age),
+            reason,
+            experience
+        });
+
+        await application.save();
+        res.json({ success: true, message: 'Başvurunuz başarıyla gönderildi!' });
+    } catch (error) {
+        console.error('Başvuru hatası:', error);
+        res.json({ success: false, message: 'Bir hata oluştu!' });
+    }
+});
+
+// Kullanıcının başvurusunu görüntüleme
+app.get('/my-application', checkAuth, async (req, res) => {
+    try {
+        const application = await Application.findOne({ userId: req.session.user.id });
+        res.render('my-application', { user: req.session.user, application });
+    } catch (error) {
+        console.error('Başvuru görüntüleme hatası:', error);
+        res.redirect('/dashboard');
+    }
+});
+
+// ==================== ADMIN - BAŞVURU YÖNETİMİ ====================
+
+// Admin başvuru listesi
+app.get('/admin/applications', checkAuth, checkAdmin, async (req, res) => {
+    try {
+        const applications = await Application.find().sort({ createdAt: -1 });
+        const stats = {
+            toplamBasvuru: await Application.countDocuments(),
+            bekleyen: await Application.countDocuments({ status: 'pending' }),
+            kabul: await Application.countDocuments({ status: 'approved' }),
+            red: await Application.countDocuments({ status: 'rejected' })
+        };
+        res.render('admin-applications', { 
+            user: req.session.user, 
+            applications,
+            stats 
+        });
+    } catch (error) {
+        console.error('Başvuruları listeleme hatası:', error);
+        res.redirect('/dashboard');
+    }
+});
+
+// Başvuru onay/red
+app.post('/api/admin/application/:id', checkAuth, checkAdmin, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { action, note } = req.body;
+
+        const application = await Application.findById(id);
+        if (!application) {
+            return res.json({ success: false, message: 'Başvuru bulunamadı!' });
+        }
+
+        application.status = action === 'approve' ? 'approved' : 'rejected';
+        application.reviewedBy = req.session.user.username;
+        application.reviewedAt = new Date();
+        application.reviewNote = note || '';
+
+        await application.save();
+        res.json({ success: true, message: 'Başvuru güncellendi!' });
+    } catch (error) {
+        console.error('Başvuru güncelleme hatası:', error);
+        res.json({ success: false, message: 'Bir hata oluştu!' });
+    }
+});
+
+// ==================== AKTİVİTE İSTATİSTİKLERİ ====================
+
+// Analytics sayfası
+app.get('/analytics', checkAuth, async (req, res) => {
+    try {
+        const now = new Date();
+        const oneDayAgo = new Date(now - 24 * 60 * 60 * 1000);
+
+        const dailyActive = await Activity.distinct('userId', {
+            timestamp: { $gte: oneDayAgo }
+        });
+
+        const topUsers = await UserStats.find({ weeklyActive: true })
+            .sort({ totalMessages: -1 })
+            .limit(10);
+
+        const afkUsers = await UserStats.find({
+            afkSince: { $ne: null },
+            lastStatus: 'idle'
+        });
+
+        const hourlyActivity = await Activity.aggregate([
+            { $match: { timestamp: { $gte: oneDayAgo } } },
+            {
+                $group: {
+                    _id: { $hour: '$timestamp' },
+                    count: { $sum: 1 }
+                }
+            },
+            { $sort: { _id: 1 } }
+        ]);
+
+        res.render('analytics', {
+            user: req.session.user,
+            stats: {
+                dailyActiveCount: dailyActive.length,
+                topUsers,
+                afkUsers,
+                hourlyActivity
+            }
+        });
+    } catch (error) {
+        console.error('Analytics hatası:', error);
+        res.redirect('/dashboard');
+    }
 });
 
 // Logout
