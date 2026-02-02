@@ -60,8 +60,8 @@ app.use(passport.session());
 
 // Discord OAuth2 Strategy
 passport.use(new DiscordStrategy({
-    clientID: '1317949056614875176',
-    clientSecret: 'r9SxmIocFIGBbO6E0HAQwLjTRsNLQcN9',
+    clientID: '1467881157545689132',
+    clientSecret: 'VQC5W3E7NaV_gHr2v2AD_L-iy_CEXeoV',
     callbackURL: 'https://discord-bot-panelv2.onrender.com/auth/discord/callback',
     scope: ['identify', 'email', 'guilds']
 }, (accessToken, refreshToken, profile, done) => {
