@@ -1,24 +1,16 @@
 {
-  "name": "discord-bot-webpanel",
+  "name": "discord-bot-panel",
   "version": "1.0.0",
-  "description": "Discord bot için web panel",
-  "main": "webpanel.js",
+  "description": "Discord Bot Web Panel",
+  "main": "server.js",
   "scripts": {
-    "start": "node webpanel.js",
-    "dev": "nodemon webpanel.js"
+    "start": "node server.js"
   },
-  "keywords": ["discord", "bot", "webpanel"],
-  "author": "",
-  "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
-    "ejs": "^3.1.9",
     "express-session": "^1.17.3",
-    "passport": "^0.6.0",
-    "passport-discord": "^0.1.4",
-    "body-parser": "^1.20.2"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.1"
+    "axios": "^1.6.0",
+    "ejs": "^3.1.9",
+    "dotenv": "^16.3.1"
   }
 }
