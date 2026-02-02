@@ -9,9 +9,40 @@
   "dependencies": {
     "express": "^4.18.2",
     "express-session": "^1.17.3",
+    "passport": "^0.6.0",
+    "passport-discord": "^0.1.4",
     "axios": "^1.6.0",
     "ejs": "^3.1.9",
     "dotenv": "^16.3.1",
     "mongoose": "^8.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
+```
+
+---
+
+## 📋 Değişiklikler:
+
+**Eklenenler:**
+- ✅ `"passport": "^0.6.0"` (OAuth için ana modül)
+- ✅ `"passport-discord": "^0.1.4"` (Discord stratejisi)
+- ✅ `"engines"` (Node.js versiyonu belirtildi)
+
+**Kalanlar:**
+- ✅ `express`, `express-session`, `axios`, `ejs`, `dotenv`, `mongoose` (bunlar zaten vardı)
+
+---
+
+## 🚀 Sonra:
+
+1. **`package.json`** dosyasını yukarıdaki kodla değiştirin
+2. **"Commit changes"** yapın
+3. **30-60 saniye** bekleyin (Render otomatik deploy edecek)
+4. **Logs'u kontrol edin** - şunu görmelisiniz:
+```
+   ✅ MongoDB bağlantısı başarılı
+   🚀 Server çalışıyor: http://localhost:3000
+   ==> Your service is live 🎉
