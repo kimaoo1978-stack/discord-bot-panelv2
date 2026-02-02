@@ -275,42 +275,64 @@ app.get('/analytics', checkAuth, async (req, res) => {
         const now = new Date();
         const oneDayAgo = new Date(now - 24 * 60 * 60 * 1000);
 
-        const dailyActive = await Activity.distinct('userId', {
-            timestamp: { $gte: oneDayAgo }
-        });
+        // Varsayılan değerler
+        let dailyActive = [];
+        let topUsers = [];
+        let afkUsers = [];
+        let hourlyActivity = [];
 
-        const topUsers = await UserStats.find({ weeklyActive: true })
-            .sort({ totalMessages: -1 })
-            .limit(10);
+        try {
+            dailyActive = await Activity.distinct('userId', {
+                timestamp: { $gte: oneDayAgo }
+            });
+        } catch (e) {}
 
-        const afkUsers = await UserStats.find({
-            afkSince: { $ne: null },
-            lastStatus: 'idle'
-        });
+        try {
+            topUsers = await UserStats.find({ weeklyActive: true })
+                .sort({ totalMessages: -1 })
+                .limit(10);
+        } catch (e) {}
 
-        const hourlyActivity = await Activity.aggregate([
-            { $match: { timestamp: { $gte: oneDayAgo } } },
-            {
-                $group: {
-                    _id: { $hour: '$timestamp' },
-                    count: { $sum: 1 }
-                }
-            },
-            { $sort: { _id: 1 } }
-        ]);
+        try {
+            afkUsers = await UserStats.find({
+                afkSince: { $ne: null },
+                lastStatus: 'idle'
+            });
+        } catch (e) {}
+
+        try {
+            hourlyActivity = await Activity.aggregate([
+                { $match: { timestamp: { $gte: oneDayAgo } } },
+                {
+                    $group: {
+                        _id: { $hour: '$timestamp' },
+                        count: { $sum: 1 }
+                    }
+                },
+                { $sort: { _id: 1 } }
+            ]);
+        } catch (e) {}
 
         res.render('analytics', {
             user: req.session.user,
             stats: {
-                dailyActiveCount: dailyActive.length,
-                topUsers,
-                afkUsers,
-                hourlyActivity
+                dailyActiveCount: dailyActive.length || 0,
+                topUsers: topUsers || [],
+                afkUsers: afkUsers || [],
+                hourlyActivity: hourlyActivity || []
             }
         });
     } catch (error) {
         console.error('Analytics hatası:', error);
-        res.redirect('/dashboard');
+        res.render('analytics', {
+            user: req.session.user,
+            stats: {
+                dailyActiveCount: 0,
+                topUsers: [],
+                afkUsers: [],
+                hourlyActivity: []
+            }
+        });
     }
 });
 
