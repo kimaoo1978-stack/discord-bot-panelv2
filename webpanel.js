@@ -60,7 +60,7 @@ app.get('/', (req, res) => {
   res.render('index', { user: req.user });
 });
 
-// Login sayfası
+// Login sayfası görüntüle
 app.get('/login', (req, res) => {
   if (req.isAuthenticated()) {
     return res.redirect('/dashboard');
@@ -68,10 +68,10 @@ app.get('/login', (req, res) => {
   res.render('login');
 });
 
-// Discord auth
+// Discord OAuth başlat
 app.get('/auth/discord', passport.authenticate('discord'));
 
-// Callback
+// OAuth callback
 app.get('/callback',
   passport.authenticate('discord', { failureRedirect: '/' }),
   (req, res) => res.redirect('/dashboard')
