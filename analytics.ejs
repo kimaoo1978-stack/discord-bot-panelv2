@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aktivite İstatistikleri</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #5865F2;
+            margin-bottom: 10px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #5865F2;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .stat-card {
+            padding: 25px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .stat-card h3 {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+        .stat-card p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .charts-section {
+            margin-top: 40px;
+        }
+        .chart-container {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .chart-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .top-users {
+            margin-top: 40px;
+        }
+        .user-list {
+            display: grid;
+            gap: 15px;
+        }
+        .user-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+        .user-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user-rank {
+            width: 40px;
+            height: 40px;
+            background: #5865F2;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #5865F2;
+        }
+        .user-stats {
+            text-align: right;
+        }
+        .user-stats .messages {
+            font-weight: 600;
+            color: #5865F2;
+            font-size: 18px;
+        }
+        .user-stats .time {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .afk-section {
+            margin-top: 40px;
+        }
+        .afk-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .afk-card {
+            padding: 20px;
+            background: #fff3cd;
+            border-radius: 12px;
+            border-left: 4px solid #ffc107;
+        }
+        .afk-card h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        .afk-card p {
+            color: #856404;
+            font-size: 14px;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        .no-data h2 {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/dashboard" class="back-btn">← Dashboard'a Dön</a>
+        
+        <h1>📊 Sunucu Aktivite İstatistikleri</h1>
+        <p style="color: #666; margin-bottom: 30px;">Son 24 saat içindeki sunucu aktivitesi</p>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3><%= stats.dailyActiveCount %></h3>
+                <p>🔥 Günlük Aktif Kullanıcı</p>
+            </div>
+            <div class="stat-card">
+                <h3><%= stats.topUsers.length %></h3>
+                <p>⭐ Haftalık Aktif</p>
+            </div>
+            <div class="stat-card">
+                <h3><%= stats.afkUsers.length %></h3>
+                <p>💤 AFK Kullanıcı</p>
+            </div>
+            <div class="stat-card">
+                <h3><%= stats.hourlyActivity.length %></h3>
+                <p>📈 Aktivite Saati</p>
+            </div>
+        </div>
+
+        <!-- Saatlik Aktivite Grafiği -->
+        <div class="charts-section">
+            <div class="chart-container">
+                <div class="chart-title">⏰ Saatlik Aktivite Dağılımı (Son 24 Saat)</div>
+                <canvas id="hourlyChart"></canvas>
+            </div>
+        </div>
+
+        <!-- En Aktif Kullanıcılar -->
+        <div class="top-users">
+            <h2 style="color: #5865F2; margin-bottom: 20px;">🏆 En Aktif Kullanıcılar (Haftalık)</h2>
+            
+            <% if (stats.topUsers.length > 0) { %>
+                <div class="user-list">
+                    <% stats.topUsers.forEach((user, index) => { %>
+                        <div class="user-item">
+                            <div class="user-info">
+                                <div class="user-rank">#<%= index + 1 %></div>
+                                <img src="<%= user.avatar ? `https://cdn.discordapp.com/avatars/${user.userId}/${user.avatar}.png` : 'https://cdn.discordapp.com/embed/avatars/0.png' %>" 
+                                     class="user-avatar" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                                <div>
+                                    <h4 style="color: #333;"><%= user.username || 'Bilinmeyen' %></h4>
+                                    <p style="color: #666; font-size: 14px;">Son görülme: <%= user.lastSeen ? new Date(user.lastSeen).toLocaleDateString('tr-TR') : 'Bilinmiyor' %></p>
+                                </div>
+                            </div>
+                            <div class="user-stats">
+                                <div class="messages">💬 <%= user.totalMessages || 0 %> mesaj</div>
+                                <div class="time">🎤 <%= Math.floor((user.totalVoiceTime || 0) / 60) %> dakika</div>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } else { %>
+                <div class="no-data">
+                    <h2>Henüz veri yok</h2>
+                    <p>Aktivite takibi başladığında burada görüntülenecek</p>
+                </div>
+            <% } %>
+        </div>
+
+        <!-- AFK Kullanıcılar -->
+        <div class="afk-section">
+            <h2 style="color: #5865F2; margin-bottom: 20px;">💤 AFK Kullanıcılar</h2>
+            
+            <% if (stats.afkUsers.length > 0) { %>
+                <div class="afk-list">
+                    <% stats.afkUsers.forEach(user => { %>
+                        <div class="afk-card">
+                            <h4><%= user.username || 'Bilinmeyen' %></h4>
+                            <p>AFK Süresi: <%= user.afkSince ? Math.floor((Date.now() - new Date(user.afkSince)) / (1000 * 60)) + ' dakika' : 'Bilinmiyor' %></p>
+                            <p>Son durum: <%= user.lastStatus || 'idle' %></p>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } else { %>
+                <div class="no-data" style="padding: 40px;">
+                    <p>Şu anda AFK kullanıcı yok 🎉</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <script>
+        // Saatlik aktivite grafiği
+        const hourlyData = <%- JSON.stringify(stats.hourlyActivity) %>;
+        
+        const hours = Array.from({length: 24}, (_, i) => i);
+        const activityCounts = hours.map(hour => {
+            const data = hourlyData.find(d => d._id === hour);
+            return data ? data.count : 0;
+        });
+
+        const ctx = document.getElementById('hourlyChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: hours.map(h => h + ':00'),
+                datasets: [{
+                    label: 'Aktivite Sayısı',
+                    data: activityCounts,
+                    borderColor: '#5865F2',
+                    backgroundColor: 'rgba(88, 101, 242, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
