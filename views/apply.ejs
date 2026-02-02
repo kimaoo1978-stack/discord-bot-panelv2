@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Başvuru Yap - Discord Bot Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #5865F2;
+            margin-bottom: 10px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #5865F2;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #5865F2;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: #5865F2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .submit-btn:hover {
+            background: #4752C4;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/dashboard" class="back-btn">← Dashboard'a Dön</a>
+        
+        <h1>📝 Başvuru Formu</h1>
+        <p style="color: #666; margin-bottom: 30px;">Lütfen tüm alanları eksiksiz doldurun</p>
+
+        <form action="/apply" method="POST">
+            <div class="form-group">
+                <label for="age">Yaşınız *</label>
+                <input type="number" id="age" name="age" min="13" max="100" required>
+            </div>
+
+            <div class="form-group">
+                <label for="position">Başvurmak İstediğiniz Pozisyon *</label>
+                <select id="position" name="position" required>
+                    <option value="">Seçiniz...</option>
+                    <option value="moderator">Moderatör</option>
+                    <option value="developer">Geliştirici</option>
+                    <option value="designer">Tasarımcı</option>
+                    <option value="support">Destek Ekibi</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="experience">Deneyiminiz (varsa) *</label>
+                <textarea id="experience" name="experience" required 
+                          placeholder="Daha önce benzer görevlerde bulundunuz mu? Deneyimlerinizi kısaca açıklayın..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="reason">Neden Katılmak İstiyorsunuz? *</label>
+                <textarea id="reason" name="reason" required 
+                          placeholder="Ekibimize neden katılmak istediğinizi açıklayın..."></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">🚀 Başvuruyu Gönder</button>
+        </form>
+    </div>
+</body>
+</html>
