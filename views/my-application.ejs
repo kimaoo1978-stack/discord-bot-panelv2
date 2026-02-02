@@ -128,7 +128,6 @@
         <p style="color: #666; margin-bottom: 20px;">Başvuru durumunuzu ve detaylarınızı görüntüleyin</p>
 
         <% if (application) { %>
-            <!-- Başvuru Durumu -->
             <div style="text-align: center; margin: 30px 0;">
                 <% if (application.status === 'pending') { %>
                     <span class="status-badge status-pending">⏳ İnceleniyor</span>
@@ -139,7 +138,6 @@
                 <% } %>
             </div>
 
-            <!-- Başvuru Detayları -->
             <div class="application-details">
                 <div class="section-title">👤 Kişisel Bilgiler</div>
                 
@@ -193,7 +191,6 @@
             </div>
 
         <% } else { %>
-            <!-- Başvuru Yok -->
             <div class="no-application">
                 <h2>😊 Henüz Başvuru Yapmadınız</h2>
                 <p>Ekibimize katılmak için hemen başvuru yapabilirsiniz!</p>
