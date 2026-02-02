@@ -8,7 +8,7 @@ const path = require('path');
 const app = express();
 
 // MongoDB Bağlantısı
-mongoose.connect('mongodb+srv://kimaoo1978:12345678aA@cluster0.5e3bo.mongodb.net/discordbot?retryWrites=true&w=majority')
+mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://discordbot:DiscordBot2026@cluster0.rjirp6f.mongodb.net/discordbot?retryWrites=true&w=majority&appName=Cluster0')
 .then(() => {
     console.log('✅ MongoDB bağlantısı başarılı');
 }).catch(err => {
