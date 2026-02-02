@@ -1,113 +1,150 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - Discord Bot</title>
-  <link rel="stylesheet" href="/css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Discord Bot Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .navbar {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid #5865F2;
+        }
+        .logout-btn {
+            background: #ed4245;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .logout-btn:hover {
+            background: #c03537;
+            transform: translateY(-2px);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: white;
+            margin-bottom: 30px;
+            font-size: 36px;
+            text-align: center;
+        }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        .menu-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .menu-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        .menu-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        .menu-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+        .menu-card p {
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
-  <nav class="navbar">
-    <div class="container">
-      <h1>🤖 Discord Bot Panel</h1>
-      <div class="nav-links">
-        <a href="/dashboard" class="active">Dashboard</a>
-        <a href="/applications">Başvurular</a>
-        <a href="/settings">Ayarlar</a>
+    <div class="navbar">
         <div class="user-info">
-          <img src="https://cdn.discordapp.com/avatars/<%= user.id %>/<%= user.avatar %>.png" alt="Avatar">
-          <span><%= user.username %></span>
+            <img src="https://cdn.discordapp.com/avatars/<%= user.id %>/<%= user.avatar %>.png" 
+                 class="avatar" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+            <div>
+                <div style="font-weight: 600; color: #333;"><%= user.username %></div>
+                <div style="font-size: 12px; color: #666;">Hoş geldiniz!</div>
+            </div>
         </div>
-        <a href="/logout" class="btn btn-secondary">Çıkış</a>
-      </div>
-    </div>
-  </nav>
-
-  <div class="container dashboard">
-    <h2>Hoş geldin, <%= user.username %>! 👋</h2>
-
-    <div class="stats-grid">
-      <div class="stat-card purple">
-        <div class="stat-icon">📋</div>
-        <div class="stat-info">
-          <h3><%= stats.toplamBasvuru %></h3>
-          <p>Toplam Başvuru</p>
-        </div>
-      </div>
-
-      <div class="stat-card orange">
-        <div class="stat-icon">⏳</div>
-        <div class="stat-info">
-          <h3><%= stats.bekleyen %></h3>
-          <p>Bekleyen</p>
-        </div>
-      </div>
-
-      <div class="stat-card green">
-        <div class="stat-icon">✅</div>
-        <div class="stat-info">
-          <h3><%= stats.kabul %></h3>
-          <p>Kabul Edilen</p>
-        </div>
-      </div>
-
-      <div class="stat-card red">
-        <div class="stat-icon">❌</div>
-        <div class="stat-info">
-          <h3><%= stats.red %></h3>
-          <p>Reddedilen</p>
-        </div>
-      </div>
+        <a href="/logout" class="logout-btn">Çıkış Yap</a>
     </div>
 
-    <div class="quick-actions">
-      <h3>Hızlı İşlemler</h3>
-      <div class="action-buttons">
-        <a href="/applications" class="action-btn">
-          <span>📝</span>
-          Bekleyen Başvurular
-        </a>
-        <a href="/settings" class="action-btn">
-          <span>⚙️</span>
-          Ayarlar
-        </a>
-        <a href="#" class="action-btn">
-          <span>📊</span>
-          Raporlar
-        </a>
-      </div>
-    </div>
+    <div class="container">
+        <h1>🎮 Discord Bot Panel</h1>
+        
+        <div class="menu-grid">
+            <a href="/apply" class="menu-card">
+                <div class="menu-icon">📝</div>
+                <h3>Başvuru Yap</h3>
+                <p>Ekibimize katılmak için başvuru yapın</p>
+            </a>
 
-    <div class="recent-activity">
-      <h3>Son Aktiviteler</h3>
-      <div class="activity-list">
-        <div class="activity-item">
-          <span class="activity-icon green">✅</span>
-          <div class="activity-content">
-            <p><strong>Ahmet#1234</strong> kullanıcısının klan başvurusu kabul edildi</p>
-            <small>5 dakika önce</small>
-          </div>
-        </div>
-        <div class="activity-item">
-          <span class="activity-icon red">❌</span>
-          <div class="activity-content">
-            <p><strong>Mehmet#5678</strong> kullanıcısının yetkili başvurusu reddedildi</p>
-            <small>15 dakika önce</small>
-          </div>
-        </div>
-        <div class="activity-item">
-          <span class="activity-icon blue">📩</span>
-          <div class="activity-content">
-            <p><strong>Ayşe#9999</strong> yeni partner başvurusu yaptı</p>
-            <small>1 saat önce</small>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+            <a href="/my-application" class="menu-card">
+                <div class="menu-icon">📋</div>
+                <h3>Başvurum</h3>
+                <p>Başvuru durumunuzu görüntüleyin</p>
+            </a>
 
-  <footer>
-    <p>&copy; 2026 Discord Bot Panel</p>
-  </footer>
+            <a href="/analytics" class="menu-card">
+                <div class="menu-icon">📊</div>
+                <h3>İstatistikler</h3>
+                <p>Başvuru istatistiklerini inceleyin</p>
+            </a>
+
+            <a href="/settings" class="menu-card">
+                <div class="menu-icon">⚙️</div>
+                <h3>Ayarlar</h3>
+                <p>Hesap ayarlarınızı yönetin</p>
+            </a>
+
+            <% if (user.id === '1316826036688797756') { %>
+            <a href="/admin" class="menu-card" style="border: 3px solid #5865F2;">
+                <div class="menu-icon">👑</div>
+                <h3>Admin Panel</h3>
+                <p>Başvuruları yönetin</p>
+            </a>
+            <% } %>
+        </div>
+    </div>
 </body>
 </html>
