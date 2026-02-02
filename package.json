@@ -24,25 +24,20 @@
 
 ---
 
-## 📋 Değişiklikler:
+## ⚠️ ÖNEMLİ:
 
-**Eklenenler:**
-- ✅ `"passport": "^0.6.0"` (OAuth için ana modül)
-- ✅ `"passport-discord": "^0.1.4"` (Discord stratejisi)
-- ✅ `"engines"` (Node.js versiyonu belirtildi)
-
-**Kalanlar:**
-- ✅ `express`, `express-session`, `axios`, `ejs`, `dotenv`, `mongoose` (bunlar zaten vardı)
+- ✅ **Sadece yukarıdaki kodu** yapıştırın
+- ❌ **Başka hiçbir şey eklemeyin** (açıklama, notlar, vs.)
+- ❌ **```json** veya **```** gibi markdown işaretleri olmamalı
+- ✅ Dosya **sadece bu JSON ile** başlamalı ve bitmeli
 
 ---
 
-## 🚀 Sonra:
+## 🎯 Doğru Görünüm:
 
-1. **`package.json`** dosyasını yukarıdaki kodla değiştirin
-2. **"Commit changes"** yapın
-3. **30-60 saniye** bekleyin (Render otomatik deploy edecek)
-4. **Logs'u kontrol edin** - şunu görmelisiniz:
+Dosyayı açtığınızda **SADECE** şunu görmelisiniz:
 ```
-   ✅ MongoDB bağlantısı başarılı
-   🚀 Server çalışıyor: http://localhost:3000
-   ==> Your service is live 🎉
+{
+  "name": "discord-bot-panel",
+  ...
+}
