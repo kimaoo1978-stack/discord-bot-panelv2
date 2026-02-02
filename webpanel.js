@@ -10,9 +10,9 @@ const PORT = process.env.PORT || 3000;
 
 // Config
 const config = {
-  clientID: 'DISCORD_CLIENT_ID', // Discord Developer Portal'dan al
-  clientSecret: 'DISCORD_CLIENT_SECRET',
-  callbackURL: 'http://localhost:3000/callback',
+  clientID: process.env.CLIENT_ID,
+  clientSecret: process.env.CLIENT_SECRET,
+  callbackURL: 'https://discord-bot-panelv2.onrender.com/callback',
   scope: ['identify', 'guilds']
 };
 
