@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Başvurum - Discord Bot Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #5865F2;
+            margin-bottom: 30px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #5865F2;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+        .no-application {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .no-application h2 {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #5865F2;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #4752C4;
+            transform: translateY(-2px);
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .info-row {
+            display: flex;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #666;
+            width: 200px;
+        }
+        .info-value {
+            flex: 1;
+            color: #333;
+        }
+        .review-note {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #5865F2;
+        }
+        .review-note h3 {
+            color: #5865F2;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/dashboard" class="back-btn">← Dashboard'a Dön</a>
+        
+        <h1>📋 Başvurum</h1>
+
+        <% if (!application) { %>
+            <div class="no-application">
+                <h2>Henüz başvuru yapmadınız</h2>
+                <p style="color: #666; margin-bottom: 30px;">Topluluğumuza katılmak için başvuru yapabilirsiniz</p>
+                <a href="/apply" class="btn">🎯 Başvuru Yap</a>
+            </div>
+        <% } else { %>
+            <div class="status-badge status-<%= application.status %>">
+                <% if (application.status === 'pending') { %>
+                    ⏳ Beklemede
+                <% } else if (application.status === 'approved') { %>
+                    ✅ Onaylandı
+                <% } else { %>
+                    ❌ Reddedildi
+                <% } %>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">Başvuru Tarihi:</div>
+                <div class="info-value"><%= new Date(application.createdAt).toLocaleDateString('tr-TR') %></div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">Discord Tag:</div>
+                <div class="info-value"><%= application.username %>#<%= application.discriminator || '0' %></div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">Yaş:</div>
+                <div class="info-value"><%= application.age %></div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">Katılma Sebebi:</div>
+                <div class="info-value"><%= application.reason %></div>
+            </div>
+
+            <% if (application.experience) { %>
+            <div class="info-row">
+                <div class="info-label">Deneyim:</div>
+                <div class="info-value"><%= application.experience %></div>
+            </div>
+            <% } %>
+
+            <% if (application.reviewedBy) { %>
+            <div class="info-row">
+                <div class="info-label">İnceleyen:</div>
+                <div class="info-value"><%= application.reviewedBy %></div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">İnceleme Tarihi:</div>
+                <div class="info-value"><%= new Date(application.reviewedAt).toLocaleDateString('tr-TR') %></div>
+            </div>
+            <% } %>
+
+            <% if (application.reviewNote) { %>
+            <div class="review-note">
+                <h3>💬 Yönetici Notu</h3>
+                <p><%= application.reviewNote %></p>
+            </div>
+            <% } %>
+        <% } %>
+    </div>
+</body>
+</html>
