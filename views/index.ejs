@@ -1,1 +1,62 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discord Bot - Ana Sayfa</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <h1>🤖 Discord Bot Panel</h1>
+      <div class="nav-links">
+        <% if (user) { %>
+          <a href="/dashboard">Dashboard</a>
+          <a href="/applications">Başvurular</a>
+          <a href="/settings">Ayarlar</a>
+          <a href="/logout" class="btn btn-secondary">Çıkış</a>
+        <% } else { %>
+          <a href="/login" class="btn btn-primary">Discord ile Giriş</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
 
+  <div class="hero">
+    <div class="container">
+      <h2>Sunucunu Yönet</h2>
+      <p>Modern ve kullanıcı dostu web panel ile başvurularını kolayca yönet</p>
+      <% if (!user) { %>
+        <a href="/login" class="btn btn-large">Hemen Başla</a>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="features">
+    <div class="container">
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="icon">📊</div>
+          <h3>İstatistikler</h3>
+          <p>Tüm başvurularını tek yerden takip et</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">⚡</div>
+          <h3>Hızlı İşlem</h3>
+          <p>Tek tıkla başvuruları kabul/red et</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🔒</div>
+          <h3>Güvenli</h3>
+          <p>Discord OAuth2 ile güvenli giriş</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Discord Bot Panel</p>
+  </footer>
+</body>
+</html>
