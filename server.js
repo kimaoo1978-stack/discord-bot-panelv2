@@ -8,10 +8,8 @@ const path = require('path');
 const app = express();
 
 // MongoDB Bağlantısı
-mongoose.connect('mongodb+srv://kimaoo1978:12345678aA@cluster0.5e3bo.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => {
+mongoose.connect('mongodb+srv://kimaoo1978:12345678aA@cluster0.5e3bo.mongodb.net/discordbot?retryWrites=true&w=majority')
+.then(() => {
     console.log('✅ MongoDB bağlantısı başarılı');
 }).catch(err => {
     console.error('❌ MongoDB bağlantı hatası:', err);
@@ -52,7 +50,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        maxAge: 24 * 60 * 60 * 1000 // 24 saat
+        maxAge: 24 * 60 * 60 * 1000
     }
 }));
 
@@ -340,7 +338,114 @@ app.get('/settings', isAuthenticated, (req, res) => {
 app.get('/admin', isAdmin, async (req, res) => {
     try {
         const applications = await Application.find().sort({ createdAt: -1 });
-        res.render('admin', { user: req.user, applications });
+        res.send(`
+            <!DOCTYPE html>
+            <html lang="tr">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Admin Panel</title>
+                <style>
+                    * { margin: 0; padding: 0; box-sizing: border-box; }
+                    body {
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        min-height: 100vh;
+                        padding: 20px;
+                    }
+                    .container {
+                        max-width: 1400px;
+                        margin: 0 auto;
+                        background: white;
+                        border-radius: 15px;
+                        padding: 40px;
+                        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+                    }
+                    h1 { color: #5865F2; margin-bottom: 30px; }
+                    .back-btn {
+                        display: inline-block;
+                        margin-bottom: 20px;
+                        color: #5865F2;
+                        text-decoration: none;
+                        font-weight: 600;
+                    }
+                    .back-btn:hover { text-decoration: underline; }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 20px;
+                    }
+                    th, td {
+                        padding: 12px;
+                        text-align: left;
+                        border-bottom: 1px solid #e0e0e0;
+                    }
+                    th {
+                        background: #f8f9fa;
+                        font-weight: 600;
+                        color: #333;
+                    }
+                    .status-pending { color: #856404; background: #fff3cd; padding: 5px 10px; border-radius: 5px; }
+                    .status-approved { color: #155724; background: #d4edda; padding: 5px 10px; border-radius: 5px; }
+                    .status-rejected { color: #721c24; background: #f8d7da; padding: 5px 10px; border-radius: 5px; }
+                    .btn {
+                        padding: 8px 15px;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        font-weight: 600;
+                        margin: 2px;
+                    }
+                    .btn-approve { background: #28a745; color: white; }
+                    .btn-reject { background: #dc3545; color: white; }
+                    .btn:hover { opacity: 0.8; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <a href="/dashboard" class="back-btn">← Dashboard'a Dön</a>
+                    <h1>👑 Admin Panel - Başvurular</h1>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kullanıcı</th>
+                                <th>Yaş</th>
+                                <th>Pozisyon</th>
+                                <th>Durum</th>
+                                <th>Tarih</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${applications.map(app => `
+                                <tr>
+                                    <td>${app.username}</td>
+                                    <td>${app.age}</td>
+                                    <td>${app.position}</td>
+                                    <td>
+                                        <span class="status-${app.status}">
+                                            ${app.status === 'pending' ? '⏳ Bekliyor' : app.status === 'approved' ? '✅ Onaylandı' : '❌ Reddedildi'}
+                                        </span>
+                                    </td>
+                                    <td>${new Date(app.createdAt).toLocaleDateString('tr-TR')}</td>
+                                    <td>
+                                        <form method="POST" action="/admin/review/${app._id}" style="display: inline;">
+                                            <input type="hidden" name="status" value="approved">
+                                            <button type="submit" class="btn btn-approve">✅ Onayla</button>
+                                        </form>
+                                        <form method="POST" action="/admin/review/${app._id}" style="display: inline;">
+                                            <input type="hidden" name="status" value="rejected">
+                                            <button type="submit" class="btn btn-reject">❌ Reddet</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </body>
+            </html>
+        `);
     } catch (error) {
         console.error('Admin panel hatası:', error);
         res.status(500).send('Bir hata oluştu');
