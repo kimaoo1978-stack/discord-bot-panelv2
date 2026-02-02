@@ -125,6 +125,21 @@ app.get('/dashboard', checkAuth, (req, res) => {
     });
 });
 
+// Başvurular
+app.get('/applications', checkAuth, (req, res) => {
+    res.render('applications', { 
+        user: req.session.user,
+        applications: []
+    });
+});
+
+// Ayarlar
+app.get('/settings', checkAuth, (req, res) => {
+    res.render('settings', { 
+        user: req.session.user
+    });
+});
+
 // Logout
 app.get('/logout', (req, res) => {
     req.session.destroy();
